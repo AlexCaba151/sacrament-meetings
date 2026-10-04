@@ -1,7 +1,12 @@
 import { redirect } from 'next/navigation';
 import { getMostRecentSunday } from '@/lib/meetings-db';
 
-export default function CurrentMeetingPage() {
-  const meeting = getMostRecentSunday();
-  redirect(meeting ? `/meetings/${meeting.id}` : '/meetings');
+export default async function CurrentMeetingPage() {
+  const meeting = await getMostRecentSunday();
+
+  if (!meeting) {
+    redirect('/meetings');
+  }
+
+  redirect(`/meetings/${meeting.id}`);
 }

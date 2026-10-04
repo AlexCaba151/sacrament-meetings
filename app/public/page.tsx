@@ -37,7 +37,7 @@ export default async function MeetingsPage({
       {meetings.length === 0 ? (
         <p>No meetings found.</p>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-4">
           {meetings.map((meeting) => (
             <MeetingCard
               key={meeting.id}
