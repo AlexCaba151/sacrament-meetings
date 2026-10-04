@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { SacramentMeeting } from '@/lib/types';
+import { deleteMeetingAction } from '@/lib/actions';
 
 interface MeetingCardProps {
   meeting: SacramentMeeting;
@@ -9,16 +10,21 @@ const labels: Record<SacramentMeeting['meetingType'], string> = {
   testimony: 'Testimony Meeting',
   regular: 'Regular Sacrament Meeting',
   stake: 'Stake Meeting',
-  general: 'General Meeting'
+  general: 'General Meeting',
 };
 
 export default function MeetingCard({
-  meeting
+  meeting,
 }: MeetingCardProps) {
   const date = new Intl.DateTimeFormat('en-US', {
     dateStyle: 'long',
-    timeZone: 'UTC'
+    timeZone: 'UTC',
   }).format(new Date(`${meeting.date}T00:00:00Z`));
+
+  const deleteAction = deleteMeetingAction.bind(
+    null,
+    meeting.id
+  );
 
   return (
     <article className="group border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg">
@@ -79,12 +85,30 @@ export default function MeetingCard({
           </div>
         </dl>
 
-        <Link
-          href={`/meetings/${meeting.id}`}
-          className="mt-7 flex w-full items-center justify-center border border-[#172033] bg-[#172033] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#294C73] focus:outline-none focus:ring-2 focus:ring-[#B08D57] focus:ring-offset-2"
-        >
-          View Program
-        </Link>
+        <div className="mt-7 grid gap-3 sm:grid-cols-3">
+          <Link
+            href={`/meetings/${meeting.id}`}
+            className="flex items-center justify-center border border-[#172033] bg-[#172033] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#294C73] focus:outline-none focus:ring-2 focus:ring-[#B08D57] focus:ring-offset-2"
+          >
+            View
+          </Link>
+
+          <Link
+            href={`/meetings/${meeting.id}/edit`}
+            className="flex items-center justify-center border border-[#172033] px-4 py-3 text-sm font-semibold text-[#172033] transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-[#B08D57] focus:ring-offset-2"
+          >
+            Edit
+          </Link>
+
+          <form action={deleteAction}>
+            <button
+              type="submit"
+              className="w-full border border-red-600 px-4 py-3 text-sm font-semibold text-red-600 transition hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            >
+              Delete
+            </button>
+          </form>
+        </div>
       </div>
     </article>
   );
